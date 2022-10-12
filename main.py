@@ -1,7 +1,7 @@
 import time
 
 # Caitlyn Murphy
-rooms = {
+rooms = {  # dictionary of rooms with directions
     'Great Hall': {
         'East': 'Botanical Room',
         'West': 'Kitchen',
@@ -44,7 +44,7 @@ rooms = {
     }
 }
 
-items = {
+items = {  # dictionary of items per room
     'Great Hall': 'empty',
     'Kitchen': 'Turkey Jerky',
     'Dining Room': 'Shield',
@@ -58,6 +58,7 @@ items = {
 }
 
 
+# basic method to show the instructions at the beginning of the game
 def show_instruction():
     print('Dragon Text Adventure Game')
     print('aka text-based D&D')
@@ -66,6 +67,10 @@ def show_instruction():
     print("Add items to inventory: pick up 'item name'\n")
 
 
+# method to determine where you are in the game
+# if in bedchambers and have all items then defeat villain
+# if in bedchamber and not have all items then lose to villain
+# if in neither of those then tell what room and current inventory
 def current_status(current_room, inventory_list):
     if current_room == 'Bedchambers' and len(inventory_list) == 8:
         print('As you open the door, you see a Fire Giant in the room.')
@@ -82,8 +87,9 @@ def current_status(current_room, inventory_list):
     print(f'_________________________')
 
 
+# method to pickup the item
 def obtain_item(current_room):
-    item = items[current_room]
+    item = items[current_room]  # gets what item should be in this oom
     pickup_item = input(f'Please use the command to pick up {item}: ')
     # print(pickup_item[8:])
     if pickup_item[8:] == item:
@@ -102,18 +108,22 @@ if __name__ == '__main__':
     show_instruction()
     while True:
         current_status(current_room, inventory_list)
+        # checks if the item in current room is in the inventory list before printing the item
         if items[current_room] in inventory_list:
             print(f'Item currently in room: {items["Great Hall"]}')
         else:
             print(f'Item currently in room: {items[current_room]}')
+        # choice to move or pick up item
         item_or_move = input(
             "Would you like to move or pick up an item?\nUse 'move' to move or 'item' to pick up an item:")
         if item_or_move == 'item':
             obtain_item(current_room)
         elif item_or_move == 'move':
             direction = input('Which way do you want to go?\n')
+            # exits game
             if direction == 'Exit':
                 exit()
+            # determines if the room has a special direction check
 
             if (direction == 'East' or direction == 'West' or
                     direction == 'North' or direction == 'South' and current_room != 'Great Hall'):
@@ -123,6 +133,7 @@ if __name__ == '__main__':
                         if direction in rooms[room_name]:
                             new_room = rooms[room_name][direction]
                 current_room = new_room
+            # based on my map, the great hall has two ways south so this handles that
             elif current_room == 'Great Hall' and direction == 'South':
                 print('There are two doors to the South.')
                 gh_south = input('Would you like to go to the left door or the right door?\n')
@@ -131,7 +142,8 @@ if __name__ == '__main__':
                     if room_name == current_room:
                         if direction in rooms[room_name]:
                             if gh_south in rooms[room_name][direction]:
-                                new_room = rooms[room_name][direction][gh_south]
+                                new_room = rooms[room_name][direction][
+                                    gh_south]  # figuring this out made me feel amazing. multilevel dictionaries are cool now
                 current_room = new_room
 
             else:
